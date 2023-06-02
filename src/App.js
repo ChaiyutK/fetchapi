@@ -56,9 +56,10 @@ function App() {
   const onlyrecommed = (data) =>{
     let result = []
     result = data.filter((val)=>{
+      console.log(val.attributes.recommended)
       return val.attributes.recommended == true
     })
-    return result;
+    
   }
 
   
