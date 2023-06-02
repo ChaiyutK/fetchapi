@@ -57,12 +57,52 @@ function App() {
     let result = []
     result = data.filter((val)=>{
       console.log(val.attributes.recommended)
-      return val.attributes.recommended == true
+      return val.attributes.recommended === true
     })
     return JSON.stringify(result)
   }
 
-  
+
+  const recommedandnon = (data) =>{
+    let countrec = 0;
+    let countnonrec = 0;
+
+    let resultrec = data.filter((val)=>{
+      return val.attributes.recommended === true
+    }).reduce((sum,val)=>{
+      if(val.attributes.recommended === true)
+      {
+        countrec += 1;
+      }
+      return sum+val.attributes.stock
+    },0)
+
+    let resultnonrec = data.filter((val)=>{
+      return val.attributes.recommended === false
+    }).reduce((sum,val)=>{
+      if(val.attributes.recommended === false)
+      {
+        countnonrec += 1;
+      }
+      return sum+val.attributes.stock
+    },0)
+
+    const ans = {
+      "recommended" : {
+      "totalStock" : resultrec,
+      "count" : countrec
+    },"non-recommended" : {
+      "totalStock" : resultnonrec,
+      "count" : countnonrec
+    }
+  }
+    return JSON.stringify(ans)
+  }
+
+  const mostexpensive = (data) =>{
+    
+  }
+
   
   useEffect(()=>{
     axios.get("https://api.budz.co/api/products?populate=*&pagination[pageSize]=100").then(res=>{
@@ -107,6 +147,10 @@ function App() {
       <h3>Answer is {createjson(data)}</h3>
       <h2>e. Use the JSON from (d) to get only recommended items JSON array</h2>
       <h3>Answer is {onlyrecommed(jsondata)}</h3>
+      <h2>f. Use the JSON from (d) to sum count of items separated by recommended and nonrecommended</h2>
+      <h3>Answer is {recommedandnon(jsondata)}</h3>
+      <h2>g. Use the JSON from (d) find the most expensive product (get only most expensive productobject)</h2>
+      <h3>Answer is {mostexpensive(jsondata)}</h3>
 
       
     </div>
