@@ -59,7 +59,7 @@ function App() {
       console.log(val.attributes.recommended)
       return val.attributes.recommended == true
     })
-    
+    return JSON.stringify(result)
   }
 
   
