@@ -56,12 +56,10 @@ function App() {
   const onlyrecommed = (data) =>{
     let result = []
     result = data.filter((val)=>{
-      console.log(val.attributes.recommended)
       return val.attributes.recommended === true
     })
     return JSON.stringify(result)
   }
-
 
   const recommedandnon = (data) =>{
     let countrec = 0;
@@ -100,9 +98,48 @@ function App() {
   }
 
   const mostexpensive = (data) =>{
-    
+    let mostprice = 0
+    let productid = 0
+
+      data.forEach((val,index)=>{
+        if(index === 0)
+        {
+          mostprice = val.attributes.unitPrice;
+        }
+        else if(val.attributes.unitPrice > mostprice)
+        {
+          mostprice = val.attributes.unitPrice
+          productid = val.id
+        }
+      })
+
+     return JSON.stringify(data.filter((val)=>{
+        return val.id == productid
+      }))
   }
 
+  const sortmoststock = (data) =>{
+   return JSON.stringify(data.sort((a, b) => parseFloat(b.attributes.stock) - parseFloat(a.attributes.stock)))
+  }
+
+  const removecbdLevel = (data) =>{
+   return JSON.stringify(data.filter((val)=>{
+      return val.attributes.cbdLevel < 10
+    }))
+  }
+
+  const countthcLevel = (data) =>{
+
+  return data.reduce((sum,val)=>{
+      if(val.attributes.thcLevel >= 0.5)
+      {
+        return sum += 1
+      }
+      else{
+        return sum += 0
+      }
+    },0)
+  }
   
   useEffect(()=>{
     axios.get("https://api.budz.co/api/products?populate=*&pagination[pageSize]=100").then(res=>{
@@ -151,8 +188,12 @@ function App() {
       <h3>Answer is {recommedandnon(jsondata)}</h3>
       <h2>g. Use the JSON from (d) find the most expensive product (get only most expensive productobject)</h2>
       <h3>Answer is {mostexpensive(jsondata)}</h3>
-
-      
+      <h2>h. Sort the JSON from (d) by product with the most stock first</h2>
+      <h3>Answer is {sortmoststock(jsondata)}</h3>
+      <h2>i. Use the JSON from (d) remove any item with cbdLevel more than 10 from the array</h2>
+      <h3>Answer is {removecbdLevel(jsondata)}</h3>
+      <h2>j. Find out how many items have thcLevel >= 0.5</h2>
+      <h3>Answer is {countthcLevel(jsondata)} items</h3>
     </div>
   );
 }
